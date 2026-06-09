@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // req.url shold start with whatever path is there in the middleware
-app.use("/product", (req, res, next) => {
+app.post("/product", (req, res, next) => {
   console.log(req.body);
   res.redirect("/");
 });
@@ -27,9 +27,9 @@ app.use("/add-product", (req, res, next) => {
 app.use("/", (req, res, next) => {
   res.send(
     `<html>
-              <head><title>Express!!</title></head>
-              <h1>Express Home Page!! </h1>
-              </html>`,
+    <head><title>Express!!</title></head>
+    <h1>Express Home Page!! </h1>
+    </html>`,
   );
 });
 
