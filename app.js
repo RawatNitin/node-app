@@ -7,7 +7,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(adminRouter);
+app.use("/admin", adminRouter);
 app.use(shopperRouter);
 
 // If any path was not matched, request reached here
