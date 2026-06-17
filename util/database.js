@@ -1,18 +1,29 @@
+require("dotenv").config({ path: ".local.env" });
+
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 
+const mongoUser = process.env.MONGO_USER;
 const mongoPassword = process.env.MONGO_PASSWORD;
-console.log(`mongoPassword`, mongoPassword);
 
-const uri = `mongodb+srv://nitinraw_db_user:${mongoPassword}@cluster0.dphbp9y.mongodb.net/?appName=Cluster0`;
+const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@cluster0.dphbp9y.mongodb.net/?appName=Cluster0`;
 
+let _db;
 const mongoConnect = (callback) => {
   MongoClient.connect(uri)
-    .then((res) => {
+    .then((client) => {
       console.log(`connected to MongoDb`);
-      callback(res);
+
+      _db = client.db();
+      callback();
     })
     .catch((err) => console.log(`Error in connecting to mongoDb ${err}`));
 };
 
-module.exports = mongoConnect;
+const getDb = () => {
+  if (_db) return _db;
+  throw "No Db found;";
+};
+
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
