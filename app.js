@@ -1,11 +1,17 @@
 const path = require("path");
+require("dotenv").config({ path: ".local.env" });
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-const User = require("./models/user");
+// const User = require("./models/user");
+
+const mongoUser = process.env.MONGO_USER;
+const mongoPassword = process.env.MONGO_PASSWORD;
+
+const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@cluster0.dphbp9y.mongodb.net/shop?appName=Cluster0`;
 
 const app = express();
 
@@ -18,14 +24,14 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use((req, res, next) => {
-  User.findById("5baa2528563f16379fc8a610")
-    .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch((err) => console.log(err));
-});
+// app.use((req, res, next) => {
+// User.findById("5baa2528563f16379fc8a610")
+//   .then((user) => {
+//     req.user = new User(user.name, user.email, user.cart, user._id);
+//     next();
+//   })
+//   .catch((err) => console.log(err));
+// });
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -33,9 +39,7 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(
-    "mongodb+srv://maximilian:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/test?retryWrites=true",
-  )
+  .connect(uri)
   .then((result) => {
     app.listen(3000);
   })
