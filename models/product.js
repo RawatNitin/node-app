@@ -7,7 +7,7 @@ class Product {
     this.price = price;
     this.description = description;
     this.imageUrl = imageUrl;
-    this._id = new ObjectId(id);
+    this._id = id ? new ObjectId(id) : null;
   }
 
   save() {
@@ -60,6 +60,16 @@ class Product {
         console.log("Error in finding product", err);
         throw err;
       });
+  }
+
+  static deleteById(prodId) {
+    const db = getDb();
+
+    return db
+      .collection("products")
+      .deleteOne({ _id: new ObjectId(prodId) })
+      .then((res) => res)
+      .catch((err) => console.log("error in deleting product", err));
   }
 }
 
