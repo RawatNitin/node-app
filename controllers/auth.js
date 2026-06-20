@@ -1,5 +1,10 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const sgMail = require("@sendgrid/mail");
+
+require("dotenv").config({ path: ".local.env" });
+
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 exports.getLogin = (req, res, next) => {
   res.render("auth/login", {
@@ -77,6 +82,12 @@ exports.postSignup = (req, res, next) => {
           return user.save();
         })
         .then(() => {
+          sgMail.send({
+            to: email,
+            from: "nitin.raw@gmail.com",
+            subject: "Signup Succedded!",
+            html: `<h1>You have successfully signed up!</h1>`,
+          });
           return res.redirect("/login");
         });
     })
